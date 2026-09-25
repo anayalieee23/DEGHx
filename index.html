@@ -7,38 +7,37 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: #000;
+      overflow: hidden;
+    }
+
     body {
-      background: #0d1117;
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 100vh;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    }
-
-    .player-wrapper {
-      width: 100%;
-      max-width: 900px;
-      padding: 0 16px;
     }
 
     .video-container {
       position: relative;
-      width: 100%;
+      width: 100vw;
+      height: 100vh;
       background: #000;
-      border-radius: 12px;
       overflow: hidden;
-      aspect-ratio: 16/9;
-      box-shadow: 0 8px 40px rgba(0,0,0,0.8);
     }
 
     #main-video {
       position: absolute;
-      inset: 0;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: contain;
       display: block;
+      background: #000;
     }
 
     #play-overlay {
@@ -58,8 +57,8 @@
     #play-overlay.hidden { display: none; }
 
     .play-circle {
-      width: 84px;
-      height: 84px;
+      width: 90px;
+      height: 90px;
       border-radius: 50%;
       background: rgba(255,255,255,0.15);
       border: 2.5px solid rgba(255,255,255,0.85);
@@ -74,16 +73,17 @@
     }
     .triangle {
       width: 0; height: 0;
-      border-top: 20px solid transparent;
-      border-bottom: 20px solid transparent;
-      border-left: 34px solid #fff;
-      margin-left: 7px;
+      border-top: 22px solid transparent;
+      border-bottom: 22px solid transparent;
+      border-left: 38px solid #fff;
+      margin-left: 8px;
     }
     .play-label {
-      margin-top: 18px;
-      font-size: 14px;
-      color: rgba(255,255,255,0.8);
+      margin-top: 20px;
+      font-size: 15px;
+      color: rgba(255,255,255,0.82);
       letter-spacing: 0.05em;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
 
     #ads-overlay {
@@ -95,16 +95,17 @@
       align-items: center;
       justify-content: center;
       z-index: 20;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     }
     #ads-overlay.show { display: flex; }
 
     .ads-card {
       background: #161b22;
       border: 1px solid #30363d;
-      border-radius: 12px;
-      padding: 32px 36px;
+      border-radius: 14px;
+      padding: 36px 40px;
       text-align: center;
-      max-width: 360px;
+      max-width: 380px;
       width: 90%;
       animation: popIn 0.22s ease;
     }
@@ -113,12 +114,12 @@
       to   { transform: scale(1);   opacity: 1; }
     }
 
-    .ads-icon { font-size: 38px; margin-bottom: 12px; }
-    .ads-card h3 { font-size: 16px; font-weight: 600; color: #e6edf3; margin-bottom: 8px; }
-    .ads-card p { font-size: 13px; color: #8b949e; line-height: 1.6; margin-bottom: 22px; }
+    .ads-icon { font-size: 40px; margin-bottom: 14px; }
+    .ads-card h3 { font-size: 17px; font-weight: 600; color: #e6edf3; margin-bottom: 10px; }
+    .ads-card p { font-size: 13px; color: #8b949e; line-height: 1.65; margin-bottom: 24px; }
 
     .btn-sponsor {
-      padding: 11px 30px;
+      padding: 12px 32px;
       background: #1f6feb;
       color: #fff;
       font-size: 14px;
@@ -131,7 +132,7 @@
     .btn-sponsor:hover { background: #388bfd; transform: translateY(-1px); }
     .btn-sponsor:active { transform: scale(0.97); }
 
-    .countdown-text { margin-top: 14px; font-size: 12px; color: #6e7681; }
+    .countdown-text { margin-top: 16px; font-size: 12px; color: #6e7681; }
     .countdown-text span { color: #58a6ff; font-weight: 600; }
 
     .progress-wrap {
@@ -146,45 +147,43 @@
 </head>
 <body>
 
-<div class="player-wrapper">
-  <div class="video-container">
+<div class="video-container">
 
-    <video
-      id="main-video"
-      src="https://cdn.slicedrv.com/cTyxBrnb1.mp4"
-      controls
-      controlsList="nodownload"
-      preload="metadata"
-      playsinline
-    ></video>
+  <video
+    id="main-video"
+    src="https://cdn.slicedrv.com/cTyxBrnb1.mp4"
+    controls
+    controlsList="nodownload"
+    preload="metadata"
+    playsinline
+  ></video>
 
-    <div id="play-overlay" onclick="startPlayer()">
-      <div class="play-circle">
-        <div class="triangle"></div>
-      </div>
-      <span class="play-label">Play Video</span>
+  <div id="play-overlay" onclick="startPlayer()">
+    <div class="play-circle">
+      <div class="triangle"></div>
     </div>
-
-    <div id="ads-overlay">
-      <div class="ads-card">
-        <div class="ads-icon">⚡</div>
-        <h3>Wait a minute, please...</h3>
-        <p>The video will resume automatically after you visit our sponsor's page. This happens only once.</p>
-        <button class="btn-sponsor" onclick="goToAds()">Watch Full →</button>
-        <div class="countdown-text">
-          Automatically continue in <span id="countdown">5</span> second
-        </div>
-        <div class="progress-wrap">
-          <div class="progress-fill" id="progress-fill"></div>
-        </div>
-      </div>
-    </div>
-
+    <span class="play-label">Play Video</span>
   </div>
+
+  <div id="ads-overlay">
+    <div class="ads-card">
+      <div class="ads-icon">⚡</div>
+      <h3>Wait a minute, please...</h3>
+      <p>The video will continue automatically after you click "Watch the full video." This happens only once.</p>
+      <button class="btn-sponsor" onclick="goToAds()">Watch the full video →</button>
+      <div class="countdown-text">
+        Automatically continue in <span id="countdown">5</span> second
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <script>
-  // ✏️ GANTI SESUAI KEBUTUHAN KAMU
+  // ✏️ GANTI SESUAI KEBUTUHAN
   var VIDEO_URL    = 'https://cdn.slicedrv.com/cTyxBrnb1.mp4';
   var ADS_URL      = 'https://omg10.com/4/11265278';
   var ADS_DELAY    = 3000;
@@ -193,6 +192,19 @@
   var video    = document.getElementById('main-video');
   var adsShown = false;
   var countdownInterval = null;
+
+  // Otomatis sesuaikan ukuran video dengan resolusi aslinya
+  function resizeVideo() {
+    var vw = video.videoWidth;
+    var vh = video.videoHeight;
+    if (!vw || !vh) return;
+    var scale = Math.min(window.innerWidth / vw, window.innerHeight / vh);
+    video.style.width  = (vw * scale) + 'px';
+    video.style.height = (vh * scale) + 'px';
+  }
+
+  video.addEventListener('loadedmetadata', resizeVideo);
+  window.addEventListener('resize', resizeVideo);
 
   function startPlayer() {
     document.getElementById('play-overlay').classList.add('hidden');
@@ -209,14 +221,14 @@
     var fill = document.getElementById('progress-fill');
     fill.style.transition = 'none';
     fill.style.width = '100%';
-    setTimeout(function() {
+    setTimeout(function () {
       fill.style.transition = 'width ' + SKIP_SECONDS + 's linear';
       fill.style.width = '0%';
     }, 50);
 
     var left = SKIP_SECONDS;
     document.getElementById('countdown').textContent = left;
-    countdownInterval = setInterval(function() {
+    countdownInterval = setInterval(function () {
       left--;
       var el = document.getElementById('countdown');
       if (el) el.textContent = left;
@@ -235,8 +247,7 @@
     video.play();
   }
 
-  // Blokir klik kanan save video
-  video.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+  video.addEventListener('contextmenu', function (e) { e.preventDefault(); });
 </script>
 
 </body>
